@@ -46,7 +46,8 @@ if ano_selecionado:
         st.subheader(f"📌 {categoria}")
         df_categoria = df_ano[df_ano["categoria"] == categoria]
         for _, row in df_categoria.iterrows():
-            col1, col2 = st.columns([0.85, 0.15])
+            col1, col2, col3 = st.columns([0.6, 0.2, 0.2])
+
             with col1:
                 pago = st.checkbox(
                     f"{row['mes']} - R$ {row['valor']:.2f}",
@@ -56,6 +57,29 @@ if ano_selecionado:
                 if pago != bool(row['pago']):
                     atualizar_status_pago(row['id'], pago)
                     st.rerun()
+
+            with col2:
+                st.markdown(f"✅ {'Sim' if row['pago'] else 'Não'}")
+
+            with col3:
+                confirm_key = f"confirm_remove_{row['id']}"
+                if confirm_key not in st.session_state:
+                    st.session_state[confirm_key] = False
+
+                if not st.session_state[confirm_key]:
+                    if st.button("Remover", key=f"remove_{row['id']}"):
+                        st.session_state[confirm_key] = True
+                else:
+                    st.warning("Tem certeza que deseja remover?")
+                    col_confirm, col_cancel = st.columns(2)
+                    with col_confirm:
+                        if st.button("✅ Confirmar", key=f"confirm_{row['id']}"):
+                            remover_pagamento(row['id'])
+                            st.success("Pagamento removido.")
+                            st.rerun()
+                    with col_cancel:
+                        if st.button("❌ Cancelar", key=f"cancel_{row['id']}"):
+                            st.session_state[confirm_key] = False
 
 import altair as alt
 
