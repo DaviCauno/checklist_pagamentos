@@ -33,6 +33,13 @@ def adicionar_pagamento(ano, categoria, mes, valor, pago):
     salvar_dados(df_atual)
     return df_atual
 
+# Função para remover pagamento
+def remover_pagamento(index):
+    df = carregar_dados()
+    df = df.drop(index).reset_index(drop=True)
+    salvar_dados(df)
+    return df
+
 # Interface
 st.set_page_config(layout="wide")
 st.title("📋 Checklist de Pagamentos")
@@ -71,13 +78,20 @@ if ano_selecionado:
         st.subheader(f"📌 {categoria}")
         df_categoria = df_ano[df_ano["Categoria"] == categoria]
         for i, row in df_categoria.iterrows():
-            pago = st.checkbox(
-                f"{row['Mês']} - R$ {row['Valor']:.2f}",
-                value=row['Pago'],
-                key=f"{row['Ano']}_{row['Categoria']}_{row['Mês']}_{i}"
-            )
-            df_pagamentos.loc[row.name, "Pago"] = pago
-    salvar_dados(df_pagamentos)
+            col1, col2 = st.columns([0.85, 0.15])
+            with col1:
+                pago = st.checkbox(
+                    f"{row['Mês']} - R$ {row['Valor']:.2f}",
+                    value=row['Pago'],
+                    key=f"{row['Ano']}_{row['Categoria']}_{row['Mês']}_{i}"
+                )
+                df_pagamentos.loc[row.name, "Pago"] = pago
+            with col2:
+                if st.button("❌", key=f"remover_{i}"):
+                    df_pagamentos = remover_pagamento(row.name)
+                    st.rerun()
+
+salvar_dados(df_pagamentos)
 
 st.caption("💾 Dados salvos automaticamente em pagamentos.json")
 
