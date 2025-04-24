@@ -56,15 +56,11 @@ if ano_selecionado:
                     remover_pagamento(row['id'])
                     st.rerun()
 
-st.markdown("---")
-st.subheader("📊 Tabela de Pagamentos")
-st.dataframe(df_pagamentos, use_container_width=True)
-
 import altair as alt
 
 st.markdown("---")
 st.subheader("📊 Tabela de Pagamentos")
-st.dataframe(df_pagamentos, use_container_width=True)
+st.dataframe(df_pagamentos.drop(columns=["id"]), use_container_width=True)
 
 st.markdown("---")
 st.subheader("📈 Gráfico de Pagamentos por Categoria")
