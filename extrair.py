@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from banco import criar_tabela, carregar_dados, salvar_pagamento, atualizar_status_pago, remover_pagamento
+from email_utils import enviar_email_novo_pagamento
 
 criar_tabela()
 
@@ -24,12 +25,16 @@ with st.expander("➕ Adicionar novo pagamento"):
     pago_flag = st.checkbox("Já está pago?", value=False)
 
     if st.button("Adicionar"):
-        if nova_categoria and novo_mes:
-            salvar_pagamento(novo_ano, nova_categoria, novo_mes, novo_valor, pago_flag)
-            st.success("Pagamento adicionado com sucesso!")
-            st.rerun()
-        else:
-            st.warning("Preencha todos os campos.")
+    if nova_categoria and novo_mes:
+        salvar_pagamento(novo_ano, nova_categoria, novo_mes, novo_valor, pago_flag)
+
+        # 💌 Enviar e-mail aqui:
+        enviar_email_novo_pagamento(novo_ano, nova_categoria, novo_mes, novo_valor, pago_flag)
+
+        st.success("Pagamento adicionado com sucesso!")
+        st.rerun()
+    else:
+        st.warning("Preencha todos os campos.")
 
 # Interface de visualização
 anos = sorted(df_pagamentos["ano"].unique()) if not df_pagamentos.empty else []
