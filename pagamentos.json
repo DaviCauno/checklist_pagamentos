@@ -1,0 +1,16 @@
+[
+  {
+    "Ano": 2025,
+    "Categoria": "Gasolina",
+    "M\u00eas": "Abr",
+    "Valor": 10.0,
+    "Pago": false
+  },
+  {
+    "Ano": 2025,
+    "Categoria": "Aline",
+    "M\u00eas": "Jun",
+    "Valor": 30.0,
+    "Pago": false
+  }
+]
