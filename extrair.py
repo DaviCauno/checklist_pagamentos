@@ -21,26 +21,24 @@ def salvar_dados(df):
         json.dump(df.to_dict(orient="records"), f, indent=2)
 
 # Função para adicionar novo pagamento
-def adicionar_pagamento(ano, categoria, mes, valor):
-    global df_pagamentos
+def adicionar_pagamento(ano, categoria, mes, valor, pago):
     novo = pd.DataFrame({
         "Ano": [ano],
         "Categoria": [categoria],
         "Mês": [mes],
         "Valor": [valor],
-        "Pago": [False]
+        "Pago": [pago]
     })
-    df_pagamentos = pd.concat([df_pagamentos, novo], ignore_index=True)
-    salvar_dados(df_pagamentos)
+    df_atual = carregar_dados()
+    df_atual = pd.concat([df_atual, novo], ignore_index=True)
+    salvar_dados(df_atual)
+    return df_atual
 
-# Carrega os dados
+# Interface
 st.set_page_config(layout="wide")
 st.title("📋 Checklist de Pagamentos")
-df_pagamentos = carregar_dados()
 
-# Seletor de ano
-anos = sorted(df_pagamentos["Ano"].unique()) if not df_pagamentos.empty else []
-ano_selecionado = st.selectbox("Selecione o ano:", anos, key="ano_select") if anos else None
+df_pagamentos = carregar_dados()
 
 # Interface para adicionar novo pagamento
 with st.expander("➕ Adicionar novo pagamento"):
@@ -53,13 +51,19 @@ with st.expander("➕ Adicionar novo pagamento"):
         novo_mes = st.selectbox("Mês", ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"])
     with col4:
         novo_valor = st.number_input("Valor (R$)", min_value=0.0, step=0.01, format="%.2f")
+    
+    pago_flag = st.checkbox("Já está pago?", value=False)
+
     if st.button("Adicionar"):
         if nova_categoria and novo_mes:
-            adicionar_pagamento(novo_ano, nova_categoria, novo_mes, novo_valor)
+            df_pagamentos = adicionar_pagamento(novo_ano, nova_categoria, novo_mes, novo_valor, pago_flag)
             st.success("Pagamento adicionado com sucesso!")
-            st.rerun()  # Corrigido aqui
         else:
             st.warning("Preencha todos os campos.")
+
+# Atualiza lista de anos incluindo o novo, se necessário
+anos = sorted(df_pagamentos["Ano"].unique()) if not df_pagamentos.empty else []
+ano_selecionado = st.selectbox("Selecione o ano:", anos, key="ano_select") if anos else None
 
 # Exibe checklist se houver ano selecionado
 if ano_selecionado:
@@ -68,9 +72,17 @@ if ano_selecionado:
         st.subheader(f"📌 {categoria}")
         df_categoria = df_ano[df_ano["Categoria"] == categoria]
         for i, row in df_categoria.iterrows():
-            pago = st.checkbox(f"{row['Mês']} - R$ {row['Valor']:.2f}", value=row['Pago'], key=f"{row['Ano']}_{row['Categoria']}_{row['Mês']}")
+            pago = st.checkbox(
+                f"{row['Mês']} - R$ {row['Valor']:.2f}",
+                value=row['Pago'],
+                key=f"{row['Ano']}_{row['Categoria']}_{row['Mês']}_{i}"
+            )
             df_pagamentos.loc[row.name, "Pago"] = pago
     salvar_dados(df_pagamentos)
-st.write(df_pagamentos)
 
 st.caption("💾 Dados salvos automaticamente em pagamentos.json")
+
+# DEBUG: Exibe os dados salvos
+st.markdown("---")
+st.subheader("📊 Dados atuais (debug)")
+st.json(df_pagamentos.to_dict(orient="records"))
