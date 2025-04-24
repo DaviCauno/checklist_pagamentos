@@ -51,10 +51,10 @@ if ano_selecionado:
                 if pago != bool(row['pago']):
                     atualizar_status_pago(row['id'], pago)
                     st.rerun()
-            with col2:
-                if st.button("❌", key=f"remover_{row['id']}"):
-                    remover_pagamento(row['id'])
-                    st.rerun()
+          #  with col2:
+           #     if st.button("❌", key=f"remover_{row['id']}"):
+            #        remover_pagamento(row['id'])
+             #       st.rerun()
 
 import altair as alt
 
