@@ -57,7 +57,7 @@ with st.expander("➕ Adicionar novo pagamento"):
         if nova_categoria and novo_mes:
             adicionar_pagamento(novo_ano, nova_categoria, novo_mes, novo_valor)
             st.success("Pagamento adicionado com sucesso!")
-            st.experimental_rerun()
+            st.rerun()  # Corrigido aqui
         else:
             st.warning("Preencha todos os campos.")
 
