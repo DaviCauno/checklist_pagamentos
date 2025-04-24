@@ -63,6 +63,10 @@ st.dataframe(df_pagamentos, use_container_width=True)
 import altair as alt
 
 st.markdown("---")
+st.subheader("📊 Tabela de Pagamentos")
+st.dataframe(df_pagamentos, use_container_width=True)
+
+st.markdown("---")
 st.subheader("📈 Gráfico de Pagamentos por Categoria")
 
 if not df_pagamentos.empty:
@@ -73,13 +77,24 @@ if not df_pagamentos.empty:
         .sort_values("valor", ascending=False)
     )
 
-    grafico = alt.Chart(df_resumo).mark_bar().encode(
+    barras = alt.Chart(df_resumo).mark_bar().encode(
         x=alt.X("valor:Q", title="Valor Total (R$)"),
         y=alt.Y("categoria:N", sort='-x', title="Categoria"),
         tooltip=["categoria", "valor"]
-    ).properties(width=700, height=400)
+    )
+
+    texto = alt.Chart(df_resumo).mark_text(
+        align='left',
+        baseline='middle',
+        dx=3  # deslocamento do texto em relação à barra
+    ).encode(
+        x='valor:Q',
+        y=alt.Y('categoria:N', sort='-x'),
+        text=alt.Text('valor:Q', format=".2f")  # formatar com duas casas decimais
+    )
+
+    grafico = (barras + texto).properties(width=700, height=400)
 
     st.altair_chart(grafico, use_container_width=True)
 else:
     st.info("Nenhum dado disponível para gerar gráfico.")
-
