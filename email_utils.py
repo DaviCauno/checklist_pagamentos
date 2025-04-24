@@ -22,7 +22,7 @@ def enviar_email_novo_pagamento(ano, categoria, mes, valor, pago):
     msg.attach(MIMEText(corpo, 'plain'))
 
     try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
+        with smtplib.SMTP("smtp.mail.yahoo.com", 587) as servidor:
             servidor.starttls()
             servidor.login(EMAIL_REMETENTE, SENHA_APP)
             servidor.send_message(msg)
