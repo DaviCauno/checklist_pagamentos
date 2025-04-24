@@ -51,10 +51,23 @@ if ano_selecionado:
                 if pago != bool(row['pago']):
                     atualizar_status_pago(row['id'], pago)
                     st.rerun()
-          #  with col2:
-           #     if st.button("❌", key=f"remover_{row['id']}"):
-            #        remover_pagamento(row['id'])
-             #       st.rerun()
+          with col2:
+    if st.button("❌", key=f"remover_{row['id']}"):
+        st.session_state['confirmar_exclusao'] = row['id']
+
+# Modal de confirmação
+if 'confirmar_exclusao' in st.session_state:
+    with st.modal("Confirmar exclusão"):
+        st.write("Tem certeza que deseja excluir este pagamento?")
+        col_confirmar, col_cancelar = st.columns(2)
+        with col_confirmar:
+            if st.button("Sim, excluir"):
+                remover_pagamento(st.session_state['confirmar_exclusao'])
+                del st.session_state['confirmar_exclusao']
+                st.rerun()
+        with col_cancelar:
+            if st.button("Cancelar"):
+                del st.session_state['confirmar_exclusao']
 
 import altair as alt
 
