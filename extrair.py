@@ -71,5 +71,6 @@ if ano_selecionado:
             pago = st.checkbox(f"{row['Mês']} - R$ {row['Valor']:.2f}", value=row['Pago'], key=f"{row['Ano']}_{row['Categoria']}_{row['Mês']}")
             df_pagamentos.loc[row.name, "Pago"] = pago
     salvar_dados(df_pagamentos)
+st.write(df_pagamentos)
 
 st.caption("💾 Dados salvos automaticamente em pagamentos.json")
