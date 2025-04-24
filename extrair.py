@@ -46,7 +46,7 @@ if ano_selecionado:
         st.subheader(f"📌 {categoria}")
         df_categoria = df_ano[df_ano["categoria"] == categoria]
         for _, row in df_categoria.iterrows():
-            col1, col2, col3 = st.columns([0.6, 0.2, 0.2])
+            col1, col2 = st.columns([0.8, 0.2])
 
             with col1:
                 pago = st.checkbox(
@@ -59,9 +59,6 @@ if ano_selecionado:
                     st.rerun()
 
             with col2:
-                st.markdown(f"✅ {'Sim' if row['pago'] else 'Não'}")
-
-            with col3:
                 confirm_key = f"confirm_remove_{row['id']}"
                 if confirm_key not in st.session_state:
                     st.session_state[confirm_key] = False
@@ -111,7 +108,7 @@ if not df_pagamentos.empty:
     ).encode(
         x='valor:Q',
         y=alt.Y('categoria:N', sort='-x'),
-        text=alt.Text('valor:Q', format=".2f")  # formatar com duas casas decimais
+        text=alt.Text('valor:Q', format=".2f")
     )
 
     grafico = (barras + texto).properties(width=700, height=400)
