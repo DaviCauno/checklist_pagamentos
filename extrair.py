@@ -81,7 +81,7 @@ if ano_selecionado:
 
 st.caption("💾 Dados salvos automaticamente em pagamentos.json")
 
-# DEBUG: Exibe os dados salvos
+# Exibe tabela interativa em vez de JSON
 st.markdown("---")
-st.subheader("📊 Dados atuais (debug)")
-st.json(df_pagamentos.to_dict(orient="records"))
+st.subheader("📊 Tabela de Pagamentos")
+st.dataframe(df_pagamentos, use_container_width=True)
