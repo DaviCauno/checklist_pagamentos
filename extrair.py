@@ -59,3 +59,27 @@ if ano_selecionado:
 st.markdown("---")
 st.subheader("📊 Tabela de Pagamentos")
 st.dataframe(df_pagamentos, use_container_width=True)
+
+import altair as alt
+
+st.markdown("---")
+st.subheader("📈 Gráfico de Pagamentos por Categoria")
+
+if not df_pagamentos.empty:
+    df_resumo = (
+        df_pagamentos.groupby("categoria")["valor"]
+        .sum()
+        .reset_index()
+        .sort_values("valor", ascending=False)
+    )
+
+    grafico = alt.Chart(df_resumo).mark_bar().encode(
+        x=alt.X("valor:Q", title="Valor Total (R$)"),
+        y=alt.Y("categoria:N", sort='-x', title="Categoria"),
+        tooltip=["categoria", "valor"]
+    ).properties(width=700, height=400)
+
+    st.altair_chart(grafico, use_container_width=True)
+else:
+    st.info("Nenhum dado disponível para gerar gráfico.")
+
