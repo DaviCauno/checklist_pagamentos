@@ -6,8 +6,7 @@ import json
 # Caminho do arquivo de dados
 DATA_FILE = "pagamentos.json"
 
-# Função para carregar os dados
-@st.cache_data
+# Função para carregar os dados (sem cache)
 def carregar_dados():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
@@ -51,7 +50,7 @@ with st.expander("➕ Adicionar novo pagamento"):
         novo_mes = st.selectbox("Mês", ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"])
     with col4:
         novo_valor = st.number_input("Valor (R$)", min_value=0.0, step=0.01, format="%.2f")
-    
+
     pago_flag = st.checkbox("Já está pago?", value=False)
 
     if st.button("Adicionar"):
