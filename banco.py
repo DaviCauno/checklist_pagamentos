@@ -48,3 +48,8 @@ def remover_pagamento(id_pagamento):
     conn.execute("DELETE FROM pagamentos WHERE id = ?", (id_pagamento,))
     conn.commit()
     conn.close()
+
+if __name__ == "__main__":
+    criar_tabela()
+    print("Tabela criada ou já existente.")
+
